@@ -9,19 +9,31 @@ function readimage_zm
         image2 = medianFilter (image2); %apply median filter to the image
     end
     
-    connectedComponents (image1);
+    %connectedComponents (image1);
     
     image2 = smoothImageEdge (image2);
     image2 = removeSmall (image2);
-    connectedComponents(image2);
+    %connectedComponents(image2);
     
-    array1 = reArray(image1);
-    array2 = reArray (image2);
+    array1 = connectedComponents(image1);
     
-    figure
-    imshow (image1);
-    figure
-    imshow (image2);
+    for i = 1:numel(array1)
+        figure
+        imshow(array1{i})
+    end
+    
+    array2 = connectedComponents (image2);
+    
+    for i = 1:numel(array2)
+        figure
+        imshow(array2{i})
+    end
+    
+    
+    %figure
+    %imshow (image1);
+    %figure
+    %imshow (image2);
 end
 
 function bw = thresholdimage (img) %return bw with argument img
@@ -41,17 +53,19 @@ function sI = smoothImageEdge (img) %smooth out the edges of the characters with
 end
 
 function reArray = connectedComponents (img) %create connectivity factor and segment into RGB colours
-    reArray = [];
+    
     CC = bwconncomp (img, 8);
+    reArray = cell(1,(CC.NumObjects) * 2); 
     var = (regionprops (CC, 'BoundingBox'));
     var(1).BoundingBox;
+    q=1;
     
     for k = 1:CC.NumObjects %// Loop through each object and plot it in white. 
                                 %This is where you can create individual figures for each object.
 
         PixId = CC.PixelIdxList{k}; %// Just simpler to understand
         cropArea = var(k).BoundingBox;
-
+        
         if size(PixId,1) ==1 %// If only one row, don't consider.        
             continue
         else
@@ -61,26 +75,32 @@ function reArray = connectedComponents (img) %create connectivity factor and seg
             NArea = bwarea (BW2);
             
             if NArea > 5000
-                n = fix(size(BW2,1)/2);
-                A = BW2(:,1:end/2);
-                B = BW2(:,end/2+1:end);
+               n = fix(size(BW2,1)/2);
+               A = BW2(:,1:end/2);
+               B = BW2(:,end/2+1:end);
                 
-                figure
-                imshow(A);
-                figure
-                imshow(B);
-
+               reArray{q}= A;
+               reArray{q+1} = B;
+               q=q+2;
+                
             else            
-                figure
-                imshow(BW2); 
+                reArray{q} = BW2;
+                q=q+1;
             end
         end
     end
+    
+    reArray = reArray(1:(q-1));
+
       
-    labeled = labelmatrix (CC);
-    RGB_label = label2rgb(labeled);    
-    imshow (RGB_label);
-    RGB_label = bwareaopen(img, 200);
+    %labeled = labelmatrix (CC);
+    %RGB_label = label2rgb(labeled);    
+    %imshow (RGB_label);
+    %RGB_label = bwareaopen(img, 200);
+end
+
+function rotateSegment90 (img)
+
 end
 
 function rS = removeSmall (img) %remove any connected components below pixel count of 200
