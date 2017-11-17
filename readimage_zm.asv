@@ -9,12 +9,9 @@ function readimage_zm
         image2 = medianFilter (image2); %apply median filter to the image
     end
     
-    %connectedComponents (image1);
-    
     image2 = smoothImageEdge (image2);
     image2 = removeSmall (image2);
-    %connectedComponents(image2);
-    
+
     array1 = connectedComponents(image1);
     
     for i = 1:numel(array1)
@@ -29,11 +26,11 @@ function readimage_zm
         imshow(array2{i})
     end
     
-    
-    %figure
-    %imshow (image1);
-    %figure
-    %imshow (image2);
+    rotateSegment90cw(array1);
+    rotateSegment90cw(array2);
+    rotateSegment30ccw(array1);
+    rotateSegment30ccw(array2);
+
 end
 
 function bw = thresholdimage (img) %return bw with argument img
@@ -92,15 +89,32 @@ function reArray = connectedComponents (img) %create connectivity factor and seg
     
     reArray = reArray(1:(q-1));
 
-      
     %labeled = labelmatrix (CC);
     %RGB_label = label2rgb(labeled);    
     %imshow (RGB_label);
     %RGB_label = bwareaopen(img, 200);
 end
 
-function rotateSegment90 (img)
+function rotateSegment90cw(array)
+    Rarray = {};
+    for i = 1:numel(array)
+        Rarray{i} = imrotate(array{i},-90);
+    end
+    for i = 1:numel(Rarray)
+        figure
+        imshow(Rarray{i})
+    end      
+end
 
+function rotateSegment30ccw(array)
+    Rarray = {};
+    for i = 1:numel(array)
+        Rarray{i} = imrotate(array{i},30);
+    end
+    for i = 1:numel(Rarray)
+        figure
+        imshow(Rarray{i})
+    end      
 end
 
 function rS = removeSmall (img) %remove any connected components below pixel count of 200
