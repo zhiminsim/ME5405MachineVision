@@ -19,11 +19,6 @@ function readimage_zm
 
     array1 = connectedComponents(image1);
     
-    %for i = 1:numel(array1)
-        %figure
-        %imshow(array1{i})
-    %end
-    
     for k=[1,2,3,4,6]
         array1{k} = [array1{k};zeros(1, size(array1{k},2))];
         %size(array1{k})
@@ -37,13 +32,6 @@ function readimage_zm
     array2 = sortArray(array2);
     stitchImage2 = [array2{1},array2{2},array2{3},array2{4},array2{5},array2{6},array2{7},array2{8},array2{9},array2{10},array2{11},array2{12},array2{13}];
     imshow(stitchImage2);
-    
-    %{ 
-    for i = 1:numel(array2)
-        figure
-        imshow(array2{i})
-    end
-    %}
 
 end
 
@@ -221,28 +209,6 @@ function boundaryTrace(image) %trace the perimeter of the binary image argument
     imshow(bT)
 end
 
-function rotateSegment90cw(array)
-    Rarray = {};
-    for i = 1:numel(array)
-        Rarray{i} = imrotate(array{i},-90);
-    end
-    for i = 1:numel(Rarray)
-        figure
-        imshow(Rarray{i})
-    end      
-end
-
-function rotateSegment30ccw(array)
-    Rarray = {};
-    for i = 1:numel(array)
-        Rarray{i} = imrotate(array{i},30);
-    end
-    for i = 1:numel(Rarray)
-        figure
-        imshow(Rarray{i})
-    end      
-end
-
 function rS = removeSmall (img) %remove any connected components below pixel count of 200
     rS = bwareaopen(img,200);
 end
@@ -254,8 +220,4 @@ function img = readCharacterImage %for processing txt file to img file
     img(img~='0') = '1';
     img = img - '0';
     img = reshape(img, [64 64])';
-end
-
-function imageStitching(array)
-
 end
