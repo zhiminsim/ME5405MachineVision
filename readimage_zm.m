@@ -18,29 +18,63 @@ function readimage_zm
     boundaryTrace(image2);
 
     array1 = connectedComponents(image1);
-   %{ 
-    for i = 1:numel(array1)
-        figure
-        imshow(array1{i})
+    
+    %for i = 1:numel(array1)
+        %figure
+        %imshow(array1{i})
+    %end
+    
+    for k=[1,2,3,4,6]
+        array1{k} = [array1{k};zeros(1, size(array1{k},2))];
+        %size(array1{k})
     end
-    %}
+    
+    stitchImage = [array1{1}, array1{2}, array1{3}, array1{4}, array1{5}, array1{6}];  % Stitch together horizontally.
+    imshow (stitchImage);
+    
     array2 = connectedComponents (image2);
+    array2 = resizeArray(array2);
+    array2 = sortArray(array2);
+    stitchImage2 = [array2{1},array2{2},array2{3},array2{4},array2{5},array2{6},array2{7},array2{8},array2{9},array2{10},array2{11},array2{12},array2{13}];
+    imshow(stitchImage2);
+    
     %{ 
     for i = 1:numel(array2)
         figure
         imshow(array2{i})
     end
     %}
-    %rotateSegment90cw(array1);
-    %rotateSegment90cw(array2);
-    %rotateSegment30ccw(array1);
-    %rotateSegment30ccw(array2);
 
 end
 
+function reArray = sortArray(array)
+    reArray{1} = array{4};
+    reArray{2} =  array{5};
+    reArray{3} = array{8};
+    reArray{4} = array{1};
+    reArray{5} = array{2};
+    reArray{6} = array{3};
+    reArray{7} = array{6};
+    reArray{8} = array{7};
+    reArray{9} = array{9};
+    reArray{10} = array{10};
+    reArray{11} = array{11};
+    reArray{12} = array{12};
+    reArray{13} = array{13};
+end
+
+function array = resizeArray(array)
+    N = numel(array);
+    for k=1:N
+        j = 127 - size(array{k},1);
+        array{k}= [array{k};zeros( j, size(array{k},2))];
+        size(array{k})
+    end
+end
+
 function bw = thresholdimage (img) %return bw with argument img
-    figure
-    imshow(img); %show the image
+    %figure
+    %imshow(img); %show the image
     bw = im2bw(img, 0.5); %#ok<IM2BW> %thresholding
     figure
     imshow(bw);
@@ -152,9 +186,9 @@ function reArray = connectedComponents (img) %create connectivity factor and seg
     % Gets OCRed version of image. Need to get the ".Word" component out
     % from 
     for k = 1:q-1
-        figure
+        %figure
         A = padarray(reArray{k}, [5 5]) ;
-        imshow(A)
+        %imshow(A)
         ocrres = ocr(A, 'TextLayout', 'Block', 'CharacterSet', '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
         word = ocrres.Words{1};
     end
@@ -220,4 +254,8 @@ function img = readCharacterImage %for processing txt file to img file
     img(img~='0') = '1';
     img = img - '0';
     img = reshape(img, [64 64])';
+end
+
+function imageStitching(array)
+
 end
