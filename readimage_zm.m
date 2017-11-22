@@ -56,7 +56,7 @@ function array = resizeArray(array)
     for k=1:N
         j = 127 - size(array{k},1);
         array{k}= [array{k};zeros( j, size(array{k},2))];
-        size(array{k})
+        size(array{k});
     end
 end
 
@@ -73,7 +73,7 @@ function mF = medianFilter (img)
 end
 
 function sI = smoothImageEdge (img) %smooth out the edges of the characters with a size 1 disk
-    sI = imdilate(img,strel('disk',1));
+    sI = imclose(img,strel('disk',1));
 end
 
 function reArray = connectedComponents (img) %create connectivity factor and segment into RGB colours
