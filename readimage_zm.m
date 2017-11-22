@@ -73,7 +73,7 @@ function mF = medianFilter (img)
 end
 
 function sI = smoothImageEdge (img) %smooth out the edges of the characters with a size 1 disk
-    sI = imclose(img,strel('disk',1));
+    sI = imclose(img,strel('square',2));
 end
 
 function reArray = connectedComponents (img) %create connectivity factor and segment into RGB colours
